@@ -16,10 +16,10 @@ bin/
 coverage.html
 
 # --- Конфигурация (секреты!) ---
-#.env
+.env
 
 # --- IDE ---
-#.idea/
+.idea/
 .vscode/
 *.swp
 *.swo
