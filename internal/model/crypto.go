@@ -4,35 +4,35 @@ import "time"
 
 // Coin — базовые данные о криптовалюте для списка.
 type Coin struct {
-	ID                string  `json:"id"`
-	Symbol            string  `json:"symbol"`
-	Name              string  `json:"name"`
-	Image             string  `json:"image"`
-	CurrentPrice      float64 `json:"current_price"`
-	MarketCap         float64 `json:"market_cap"`
-	MarketCapRank     int     `json:"market_cap_rank"`
-	PriceChange24h    float64 `json:"price_change_24h"`
-	PriceChangePct24h float64 `json:"price_change_percentage_24h"`
-	TotalVolume       float64 `json:"total_volume"`
-	High24h           float64 `json:"high_24h"`
-	Low24h            float64 `json:"low_24h"`
-	CirculatingSupply float64 `json:"circulating_supply"`
-	TotalSupply       float64 `json:"total_supply"`
-	ATH               float64 `json:"ath"`
-	LastUpdated       time.Time `json:"last_updated"`
+	ID                string    `json:"id"`
+	Symbol            string    `json:"symbol"`
+	Name              string    `json:"name"`
+	Image             string    `json:"image"`
+	CurrentPrice      float64   `json:"currentPrice"`
+	MarketCap         float64   `json:"marketCap"`
+	MarketCapRank     int       `json:"marketCapRank"`
+	PriceChange24h    float64   `json:"priceChange24h"`
+	PriceChangePct24h float64   `json:"priceChangePct24h"`
+	TotalVolume       float64   `json:"totalVolume"`
+	High24h           float64   `json:"high24h"`
+	Low24h            float64   `json:"low24h"`
+	CirculatingSupply float64   `json:"circulatingSupply"`
+	TotalSupply       float64   `json:"totalSupply"`
+	ATH               float64   `json:"ath"`
+	LastUpdated       time.Time `json:"lastUpdated"`
 }
 
 // CoinDetail — расширенные данные по одной монете.
 type CoinDetail struct {
-	ID          string            `json:"id"`
-	Symbol      string            `json:"symbol"`
-	Name        string            `json:"name"`
-	Description string            `json:"description"`
-	Image       CoinImage         `json:"image"`
-	Links       CoinLinks         `json:"links"`
-	MarketData  CoinMarketData    `json:"market_data"`
-	Categories  []string          `json:"categories"`
-	LastUpdated time.Time         `json:"last_updated"`
+	ID          string         `json:"id"`
+	Symbol      string         `json:"symbol"`
+	Name        string         `json:"name"`
+	Description string         `json:"description"`
+	Image       CoinImage      `json:"image"`
+	Links       CoinLinks      `json:"links"`
+	MarketData  CoinMarketData `json:"marketData"`
+	Categories  []string       `json:"categories"`
+	LastUpdated time.Time      `json:"lastUpdated"`
 }
 
 // CoinImage — ссылки на логотип монеты разных размеров.
@@ -44,25 +44,25 @@ type CoinImage struct {
 
 // CoinLinks — полезные ссылки монеты.
 type CoinLinks struct {
-	Homepage     []string `json:"homepage"`
-	BlockchainSite []string `json:"blockchain_site"`
-	ReposURL     struct {
+	Homepage       []string `json:"homepage"`
+	BlockchainSite []string `json:"blockchainSite"`
+	ReposURL       struct {
 		Github []string `json:"github"`
-	} `json:"repos_url"`
+	} `json:"reposUrl"`
 }
 
 // CoinMarketData — рыночные данные монеты.
 type CoinMarketData struct {
-	CurrentPrice      map[string]float64 `json:"current_price"`       // цена в разных валютах
-	MarketCap         map[string]float64 `json:"market_cap"`
-	TotalVolume       map[string]float64 `json:"total_volume"`
-	PriceChangePct24h float64            `json:"price_change_percentage_24h"`
-	PriceChangePct7d  float64            `json:"price_change_percentage_7d"`
-	PriceChangePct30d float64            `json:"price_change_percentage_30d"`
+	CurrentPrice      map[string]float64 `json:"currentPrice"` // цена в разных валютах
+	MarketCap         map[string]float64 `json:"marketCap"`
+	TotalVolume       map[string]float64 `json:"totalVolume"`
+	PriceChangePct24h float64            `json:"priceChangePct24h"`
+	PriceChangePct7d  float64            `json:"priceChangePct7d"`
+	PriceChangePct30d float64            `json:"priceChangePct30d"`
 	ATH               map[string]float64 `json:"ath"`
 	ATL               map[string]float64 `json:"atl"`
-	CirculatingSupply float64            `json:"circulating_supply"`
-	TotalSupply       float64            `json:"total_supply"`
+	CirculatingSupply float64            `json:"circulatingSupply"`
+	TotalSupply       float64            `json:"totalSupply"`
 }
 
 // PricePoint — одна точка истории цены (timestamp + цена).
