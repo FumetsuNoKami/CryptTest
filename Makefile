@@ -1,44 +1,108 @@
-# Makefile — удобные команды для разработки
+# Makefile — управление монорепо CryptoScope из корневой папки
+# Запуск через GNU Make (входит в состав Git for Windows / WSL)
 
-# Бинарный файл
-BINARY=crypt
-CMD=./cmd/server
+.PHONY: run run-back run-front \
+        build build-back build-front \
+        install install-back install-front \
+        test lint tidy env clean help
 
-.PHONY: run build clean test lint deps tidy
+# ─────────────────────────────────────────────
+# Запуск
+# ─────────────────────────────────────────────
 
-## run: запустить сервер (с горячей перезагрузкой через air, если установлен)
+## run         : запустить backend и frontend одновременно (два окна PowerShell)
 run:
-	go run $(CMD)/main.go
+	powershell -NoProfile -ExecutionPolicy Bypass -File start.ps1
 
-## build: собрать бинарный файл
-build:
-	go build -o bin/$(BINARY) $(CMD)/main.go
+## run-back    : запустить только backend (блокирующий режим)
+run-back:
+	cd back && go run ./cmd/server/main.go
 
-## test: запустить все тесты
+## run-front   : запустить только frontend (блокирующий режим)
+run-front:
+	cd front && npm run dev
+
+# ─────────────────────────────────────────────
+# Сборка
+# ─────────────────────────────────────────────
+
+## build       : собрать backend и frontend
+build: build-back build-front
+
+## build-back  : собрать бинарник бэкенда (back/bin/crypt)
+build-back:
+	cd back && go build -o bin/crypt ./cmd/server/main.go
+
+## build-front : собрать фронтенд в front/dist
+build-front:
+	cd front && npm run build
+
+# ─────────────────────────────────────────────
+# Зависимости
+# ─────────────────────────────────────────────
+
+## install     : установить все зависимости (Go + npm)
+install: install-back install-front
+
+## install-back  : скачать Go-модули
+install-back:
+	cd back && go mod download
+
+## install-front : npm install для фронтенда
+install-front:
+	cd front && npm install
+
+# ─────────────────────────────────────────────
+# Качество кода
+# ─────────────────────────────────────────────
+
+## test        : запустить тесты бэкенда (с -race)
 test:
-	go test -v -race ./...
+	cd back && go test -v -race ./...
 
-## lint: запустить линтер (требует golangci-lint)
+## lint        : запустить golangci-lint (требует установки)
 lint:
-	golangci-lint run ./...
+	cd back && golangci-lint run ./...
 
-## tidy: обновить go.mod и go.sum
+## tidy        : привести go.mod / go.sum в порядок
 tidy:
-	go mod tidy
+	cd back && go mod tidy
 
-## deps: скачать все зависимости
-deps:
-	go mod download
+# ─────────────────────────────────────────────
+# Прочее
+# ─────────────────────────────────────────────
 
-## clean: удалить скомпилированные файлы
-clean:
-	rm -rf bin/
-
-## env: создать .env из примера
+## env         : создать .env файлы из примеров
 env:
-	cp .env.example .env
-	@echo ".env файл создан. Отредактируйте его при необходимости."
+	cd back && cp .env.example .env
+	@echo "back/.env создан"
+	cd front && cp .env.example .env
+	@echo "front/.env создан"
 
-## help: показать эту справку
+## clean       : удалить артефакты сборки
+clean:
+	cd back  && rm -rf bin/
+	cd front && rm -rf dist/
+
+## help        : показать эту справку
 help:
-	@grep -E '^## ' Makefile | sed 's/## //' | column -t -s ':'
+	@echo.
+	@echo   run            -- запустить backend и frontend (два окна PowerShell)
+	@echo   run-back       -- запустить только backend
+	@echo   run-front      -- запустить только frontend
+	@echo.
+	@echo   build          -- собрать backend и frontend
+	@echo   build-back     -- собрать back/bin/crypt
+	@echo   build-front    -- собрать front/dist
+	@echo.
+	@echo   install        -- установить все зависимости
+	@echo   install-back   -- go mod download
+	@echo   install-front  -- npm install
+	@echo.
+	@echo   test           -- go test -race ./... (backend)
+	@echo   lint           -- golangci-lint (backend)
+	@echo   tidy           -- go mod tidy (backend)
+	@echo.
+	@echo   env            -- создать .env из .env.example
+	@echo   clean          -- удалить артефакты сборки
+	@echo.

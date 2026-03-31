@@ -12,7 +12,7 @@ import (
 // Config хранит все настройки приложения.
 // Значения загружаются из файла .env или переменных окружения.
 type Config struct {
-	Server   ServerConfig
+	Server    ServerConfig
 	CoinGecko CoinGeckoConfig
 }
 
@@ -26,10 +26,10 @@ type ServerConfig struct {
 
 // CoinGeckoConfig — настройки клиента CoinGecko API.
 type CoinGeckoConfig struct {
-	BaseURL    string
-	APIKey     string        // необязателен для бесплатного плана
-	Timeout    time.Duration
-	RateLimit  int           // запросов в минуту
+	BaseURL   string
+	APIKey    string // необязателен для бесплатного плана
+	Timeout   time.Duration
+	RateLimit int // запросов в минуту
 }
 
 // Load читает конфигурацию из .env файла и переменных окружения.

@@ -46,8 +46,8 @@ func NewRouter(svc service.CryptoService, log *slog.Logger) http.Handler {
 	h := newCryptoHandler(svc, log)
 
 	r.Route("/api/v1", func(r chi.Router) {
-		r.Get("/coins", h.ListCoins)           // GET /api/v1/coins?currency=usd&page=1&per_page=50
-		r.Get("/coins/{id}", h.GetCoin)        // GET /api/v1/coins/bitcoin
+		r.Get("/coins", h.ListCoins)                   // GET /api/v1/coins?currency=usd&page=1&per_page=50
+		r.Get("/coins/{id}", h.GetCoin)                // GET /api/v1/coins/bitcoin
 		r.Get("/coins/{id}/history", h.GetCoinHistory) // GET /api/v1/coins/bitcoin/history?days=7
 	})
 
