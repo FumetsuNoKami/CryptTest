@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/andrewp/crypt/internal/client/cached"
 	"github.com/andrewp/crypt/internal/client/coingecko"
 	"github.com/andrewp/crypt/internal/config"
 	"github.com/andrewp/crypt/internal/handler"
@@ -34,9 +35,10 @@ func main() {
 	)
 
 	// 3. Собираем зависимости (Dependency Injection вручную)
-	//    client → service → handler
+	//    client → cachedClient → service → handler
 	cgClient := coingecko.New(cfg.CoinGecko, log)
-	cryptoSvc := service.NewCryptoService(cgClient, log)
+	cachedClient := cached.New(cgClient, time.Minute, log)
+	cryptoSvc := service.NewCryptoService(cachedClient, log)
 	router := handler.NewRouter(cryptoSvc, log)
 
 	// 4. Настраиваем HTTP-сервер

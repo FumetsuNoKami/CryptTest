@@ -84,3 +84,39 @@ export interface HistoryParams {
   currency?: string
   days?: HistoryDays
 }
+
+// Trending
+export interface TrendingCoin {
+  id: string
+  symbol: string
+  name: string
+  thumb: string
+  marketCapRank: number
+  score: number
+  price: number
+  priceChangePct24h: number
+  sparkline: string
+}
+
+export interface TrendingResponse {
+  coins: TrendingCoin[]
+}
+
+// Top Gainers / Losers
+export interface GainerLoser {
+  id: string
+  symbol: string
+  name: string
+  image: string
+  marketCapRank: number
+  price: number
+  priceChange24h: number
+  volume24h: number
+}
+
+export interface TopGainersLosers {
+  topGainers: GainerLoser[]
+  topLosers: GainerLoser[]
+}
+
+export type MoverDuration = '1h' | '24h' | '7d' | '14d' | '30d' | '60d' | '1y'

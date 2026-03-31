@@ -105,6 +105,37 @@ func (h *cryptoHandler) GetCoinHistory(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, history)
 }
 
+// GetTrending godoc
+// GET /api/v1/trending
+func (h *cryptoHandler) GetTrending(w http.ResponseWriter, r *http.Request) {
+	result, err := h.svc.GetTrending(r.Context())
+	if err != nil {
+		h.log.Error("GetTrending failed", "err", err)
+		writeError(w, http.StatusBadGateway, "failed to fetch trending")
+		return
+	}
+
+	writeJSON(w, http.StatusOK, result)
+}
+
+// GetTopGainersLosers godoc
+// GET /api/v1/top-movers
+//
+// Query params:
+//   - duration  string  (default: 24h)  — 1h, 24h, 7d, 14d, 30d, 60d, 1y
+func (h *cryptoHandler) GetTopGainersLosers(w http.ResponseWriter, r *http.Request) {
+	duration := queryStr(r, "duration", "24h")
+
+	result, err := h.svc.GetTopGainersLosers(r.Context(), duration)
+	if err != nil {
+		h.log.Error("GetTopGainersLosers failed", "duration", duration, "err", err)
+		writeError(w, http.StatusBadGateway, "failed to fetch top movers")
+		return
+	}
+
+	writeJSON(w, http.StatusOK, result)
+}
+
 // -------------------------------------------------------------------
 // Вспомогательные функции для чтения query-параметров
 // -------------------------------------------------------------------

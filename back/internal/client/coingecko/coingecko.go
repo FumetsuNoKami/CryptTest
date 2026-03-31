@@ -109,6 +109,74 @@ func (c *Client) GetCoinHistory(ctx context.Context, id string, params model.His
 	return &history, nil
 }
 
+// GetTrending возвращает список трендинговых монет.
+func (c *Client) GetTrending(ctx context.Context) (*model.TrendingResponse, error) {
+	var raw cgTrendingResponse
+	if err := c.get(ctx, "/search/trending", &raw); err != nil {
+		return nil, fmt.Errorf("GetTrending: %w", err)
+	}
+
+	coins := make([]model.TrendingCoin, 0, len(raw.Coins))
+	for _, entry := range raw.Coins {
+		it := entry.Item
+		coins = append(coins, model.TrendingCoin{
+			ID:                it.ID,
+			Symbol:            it.Symbol,
+			Name:              it.Name,
+			Thumb:             it.Thumb,
+			MarketCapRank:     it.MarketCapRank,
+			Score:             it.Score,
+			Price:             it.Data.Price,
+			PriceChangePct24h: it.Data.PriceChangePct24h.USD,
+			Sparkline:         it.Data.Sparkline,
+		})
+	}
+
+	c.log.Debug("GetTrending fetched", "count", len(coins))
+	return &model.TrendingResponse{Coins: coins}, nil
+}
+
+// GetTopGainersLosers возвращает топ монет по росту и падению.
+func (c *Client) GetTopGainersLosers(ctx context.Context, duration string) (*model.TopGainersLosers, error) {
+	q := url.Values{}
+	q.Set("vs_currency", "usd")
+	q.Set("duration", defaultStr(duration, "24h"))
+	q.Set("top_coins", "1000")
+
+	var raw cgTopGainersLosers
+	if err := c.get(ctx, "/coins/top_gainers_losers?"+q.Encode(), &raw); err != nil {
+		return nil, fmt.Errorf("GetTopGainersLosers: %w", err)
+	}
+
+	mapMover := func(m cgTopMover) model.GainerLoser {
+		return model.GainerLoser{
+			ID:             m.ID,
+			Symbol:         m.Symbol,
+			Name:           m.Name,
+			Image:          m.Image,
+			MarketCapRank:  m.MarketCapRank,
+			Price:          m.USD,
+			PriceChange24h: m.USDChange24h,
+			Volume24h:      m.USDVol24h,
+		}
+	}
+
+	gainers := make([]model.GainerLoser, 0, len(raw.TopGainers))
+	for _, m := range raw.TopGainers {
+		gainers = append(gainers, mapMover(m))
+	}
+	losers := make([]model.GainerLoser, 0, len(raw.TopLosers))
+	for _, m := range raw.TopLosers {
+		losers = append(losers, mapMover(m))
+	}
+
+	c.log.Debug("GetTopGainersLosers fetched", "gainers", len(gainers), "losers", len(losers))
+	return &model.TopGainersLosers{
+		TopGainers: gainers,
+		TopLosers:  losers,
+	}, nil
+}
+
 // -------------------------------------------------------------------
 // HTTP-уровень
 // -------------------------------------------------------------------
@@ -216,6 +284,47 @@ type cgMarketData struct {
 // Цены хранятся как массив [timestamp_ms, price].
 type cgMarketChart struct {
 	Prices [][]float64 `json:"prices"`
+}
+
+// cgTrendingResponse — ответ endpoint /search/trending.
+type cgTrendingResponse struct {
+	Coins []struct {
+		Item cgTrendingItem `json:"item"`
+	} `json:"coins"`
+}
+
+type cgTrendingItem struct {
+	ID            string `json:"id"`
+	Symbol        string `json:"symbol"`
+	Name          string `json:"name"`
+	Thumb         string `json:"thumb"`
+	MarketCapRank int    `json:"market_cap_rank"`
+	Score         int    `json:"score"`
+	Data          struct {
+		Price             float64 `json:"price"`
+		PriceChangePct24h struct {
+			USD float64 `json:"usd"`
+		} `json:"price_change_percentage_24h"`
+		Sparkline string `json:"sparkline"`
+	} `json:"data"`
+}
+
+// cgTopMover — один элемент из ответа /coins/top_gainers_losers.
+type cgTopMover struct {
+	ID            string  `json:"id"`
+	Symbol        string  `json:"symbol"`
+	Name          string  `json:"name"`
+	Image         string  `json:"image"`
+	MarketCapRank int     `json:"market_cap_rank"`
+	USD           float64 `json:"usd"`
+	USDChange24h  float64 `json:"usd_24h_change"`
+	USDVol24h     float64 `json:"usd_24h_vol"`
+}
+
+// cgTopGainersLosers — ответ endpoint /coins/top_gainers_losers.
+type cgTopGainersLosers struct {
+	TopGainers []cgTopMover `json:"top_gainers"`
+	TopLosers  []cgTopMover `json:"top_losers"`
 }
 
 // -------------------------------------------------------------------

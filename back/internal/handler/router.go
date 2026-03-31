@@ -49,6 +49,8 @@ func NewRouter(svc service.CryptoService, log *slog.Logger) http.Handler {
 		r.Get("/coins", h.ListCoins)                   // GET /api/v1/coins?currency=usd&page=1&per_page=50
 		r.Get("/coins/{id}", h.GetCoin)                // GET /api/v1/coins/bitcoin
 		r.Get("/coins/{id}/history", h.GetCoinHistory) // GET /api/v1/coins/bitcoin/history?days=7
+		r.Get("/trending", h.GetTrending)              // GET /api/v1/trending
+		r.Get("/top-movers", h.GetTopGainersLosers)    // GET /api/v1/top-movers?duration=24h
 	})
 
 	// Healthcheck — для Docker/K8s проверки живости сервиса

@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router";
 import { motion } from "motion/react";
 import { Moon, Sun, TrendingUp, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useTheme } from "@/hooks/useTheme";
+import { useTheme } from "@/hooks/use-theme";
 import { useState } from "react";
 
 export function Header() {

@@ -91,3 +91,39 @@ type HistoryParams struct {
 	Days       string // "1", "7", "30", "90", "365", "max"
 	Interval   string // "daily", "hourly" (только для Pro)
 }
+
+// TrendingCoin — монета из трендинга CoinGecko.
+type TrendingCoin struct {
+	ID                string  `json:"id"`
+	Symbol            string  `json:"symbol"`
+	Name              string  `json:"name"`
+	Thumb             string  `json:"thumb"`
+	MarketCapRank     int     `json:"marketCapRank"`
+	Score             int     `json:"score"`
+	Price             float64 `json:"price"`
+	PriceChangePct24h float64 `json:"priceChangePct24h"`
+	Sparkline         string  `json:"sparkline"`
+}
+
+// TrendingResponse — список трендинговых монет.
+type TrendingResponse struct {
+	Coins []TrendingCoin `json:"coins"`
+}
+
+// GainerLoser — монета из топа роста или падения.
+type GainerLoser struct {
+	ID             string  `json:"id"`
+	Symbol         string  `json:"symbol"`
+	Name           string  `json:"name"`
+	Image          string  `json:"image"`
+	MarketCapRank  int     `json:"marketCapRank"`
+	Price          float64 `json:"price"`
+	PriceChange24h float64 `json:"priceChange24h"`
+	Volume24h      float64 `json:"volume24h"`
+}
+
+// TopGainersLosers — топ монет по росту и падению цены.
+type TopGainersLosers struct {
+	TopGainers []GainerLoser `json:"topGainers"`
+	TopLosers  []GainerLoser `json:"topLosers"`
+}

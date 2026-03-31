@@ -1,8 +1,10 @@
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { HomePage } from "@/pages/HomePage";
-import { CoinPage } from "@/pages/CoinPage";
+import { HomePage } from "@/pages/home-page";
+import { CoinPage } from "@/pages/coin-page";
+import { TrendingPage } from "@/pages/trending-page";
+import { TopMoversPage } from "@/pages/top-movers-page";
 
 function RootLayout() {
   return (
@@ -42,6 +44,15 @@ const router = createBrowserRouter([
         path: "/",
         element: <HomePage />,
       },
+      {
+        path: "/trending",
+        element: <TrendingPage />,
+      },
+      // Requires pro api access, will implement later
+      // {
+      //   path: "/top-movers",
+      //   element: <TopMoversPage />,
+      // },
       {
         path: "/coins/:id",
         element: <CoinPage />,

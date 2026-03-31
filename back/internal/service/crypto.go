@@ -68,3 +68,27 @@ func (s *cryptoService) GetCoinHistory(ctx context.Context, id string, params mo
 
 	return history, nil
 }
+
+// GetTrending возвращает список трендинговых монет.
+func (s *cryptoService) GetTrending(ctx context.Context) (*model.TrendingResponse, error) {
+	s.log.Info("service: GetTrending")
+
+	result, err := s.client.GetTrending(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("service.GetTrending: %w", err)
+	}
+
+	return result, nil
+}
+
+// GetTopGainersLosers возвращает топ монет по росту и падению.
+func (s *cryptoService) GetTopGainersLosers(ctx context.Context, duration string) (*model.TopGainersLosers, error) {
+	s.log.Info("service: GetTopGainersLosers", "duration", duration)
+
+	result, err := s.client.GetTopGainersLosers(ctx, duration)
+	if err != nil {
+		return nil, fmt.Errorf("service.GetTopGainersLosers: %w", err)
+	}
+
+	return result, nil
+}

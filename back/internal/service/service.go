@@ -22,4 +22,10 @@ type CryptoService interface {
 
 	// GetCoinHistory возвращает историю цен монеты за указанный период.
 	GetCoinHistory(ctx context.Context, id string, params model.HistoryParams) (*model.CoinHistory, error)
+
+	// GetTrending возвращает список трендинговых монет.
+	GetTrending(ctx context.Context) (*model.TrendingResponse, error)
+
+	// GetTopGainersLosers возвращает топ монет по росту и падению.
+	GetTopGainersLosers(ctx context.Context, duration string) (*model.TopGainersLosers, error)
 }
